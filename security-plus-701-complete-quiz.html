@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security+ 701 Quiz</title>
+    <style>
+        :root {
+            --primary: #2196F3;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --danger: #f44336;
+            --light: #f5f5f5;
+            --dark: #333;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: var(--primary);
+            color: white;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .scenario {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .option {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .option:hover {
+            border-color: var(--primary);
+            background: #f8f9fa;
+        }
+
+        .selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .correct {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .incorrect {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+
+        .feedback {
+            display: none;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 8px;
+            background: #e8f5e9;
+            border-left: 4px solid var(--success);
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #ddd;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .category {
+            display: inline-block;
+            padding: 5px 10px;
+            background: var(--warning);
+            color: white;
+            border-radius: 15px;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .tip {
+            background: #fff3e0;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid var(--warning);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Security+ 701 Practice Quiz</h1>
+            <p>Test your knowledge of the latest cybersecurity concepts</p>
+        </div>
+
+        <div id="start-screen">
+            <h2>Ready to begin?</h2>
+            <p>This quiz covers the latest SY0-701 exam objectives including:</p>
+            <ul>
+                <li>Architecture and Design</li>
+                <li>Implementation</li>
+                <li>Operations and Incident Response</li>
+                <li>Governance, Risk, and Compliance</li>
+            </ul>
+            <button onclick="startQuiz()">Start Quiz</button>
+        </div>
+
+        <div id="quiz-content" style="display: none;">
+            <div class="progress-bar">
+                <div id="progress" class="progress"></div>
+            </div>
+
+            <div class="status">
+                <span>Question <span id="current-question">1</span>/25</span>
+                <span>Score: <span id="score">0</span></span>
+            </div>
+
+            <div id="scenario" class="scenario"></div>
+            <div id="options"></div>
+            <div id="feedback" class="feedback"></div>
+            <div id="tip" class="tip" style="display: none;"></div>
+
+            <button id="next-btn" style="display: none;" onclick="nextQuestion()">Next Question</button>
+        </div>
+
+        <div id="results" style="display: none;">
+            <h2>Quiz Complete!</h2>
+            <div id="final-score"></div>
+            <div id="recommendations"></div>
+            <button onclick="location.reload()">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                category: "Zero Trust",
+                scenario: "Your organization is implementing a Zero Trust architecture. Users complain about having to authenticate multiple times.",
+                question: "Which solution best addresses this while maintaining security?",
+                options: [
+                    {
+                        text: "Remove all authentication requirements",
+                        feedback: "This would eliminate security entirely."
+                    },
+                    {
+                        text: "Implement SSO with continuous adaptive authentication",
+                        feedback: "Correct! This maintains security while improving user experience.",
+                        correct: true
+                    },
+                    {
+                        text: "Return to traditional perimeter security",
+                        feedback: "This would be a step backward in security."
+                    },
+                    {
+                        text: "Only authenticate once per day",
+                        feedback: "This doesn't align with Zero Trust principles."
+                    }
+                ],
+                explanation: "SSO with continuous adaptive authentication validates users initially and then continuously monitors behavior, maintaining security without frequent re-authentication.",
+                tip: "Think 'Smart Security' - like a guard who remembers you but still watches your behavior."
+            },
+            // Continue with all questions...
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let questionsAnswered = 0;
+
+        function startQuiz() {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('quiz-content').style.display = 'block';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const question = questions[currentQuestionIndex];
+            
+            document.getElementById('scenario').innerHTML = `
+                <span class="category">${question.category}</span>
+                <p>${question.scenario}</p>
+                <h3>${question.question}</h3>
+            `;
+
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option';
+                button.textContent = option.text;
+                button.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(button);
+            });
+
+            updateProgress();
+        }
+
+        function selectAnswer(index) {
+            const question = questions[currentQuestionIndex];
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach(option => option.disabled = true);
+            
+            if (index === question.options.findIndex(opt => opt.correct)) {
+                options[index].classList.add('correct');
+                score++;
+                document.getElementById('score').textContent = score;
+            } else {
+                options[index].classList.add('incorrect');
+                options.forEach((option, i) => {
+                    if (question.options[i].correct) {
+                        option.classList.add('correct');
+                    }
+                });
+            }
+
+            showFeedback(question);
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function showFeedback(question) {
+            const feedback = document.getElementById('feedback');
+            feedback.innerHTML = `
+                <h4>Explanation:</h4>
+                <p>${question.explanation}</p>
+            `;
+            feedback.style.display = 'block';
+
+            const tip = document.getElementById('tip');
+            tip.innerHTML = `<strong>💡 Pro Tip:</strong> ${question.tip}`;
+            tip.style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex >= questions.length) {
+                showResults();
+                return;
+            }
+
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('tip').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+            loadQuestion();
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            document.getElementById('progress').style.width = `${progress}%`;
+            document.getElementById('current-question').textContent = currentQuestionIndex + 1;
+        }
+
+        function showResults() {
+            document.getElementById('quiz-content').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+            
+            const percentage = (score / questions.length) * 100;
+            document.getElementById('final-score').innerHTML = `
+                <h3>Your Score: ${score}/${questions.length} (${percentage.toFixed(1)}%)</h3>
+                <p>${getFeedback(percentage)}</p>
+            `;
+        }
+
+        function getFeedback(percentage) {
+            if (percentage >= 90) return "Outstanding! You're well prepared for the Security+ exam!";
+            if (percentage >= 80) return "Great job! Focus on the few areas you missed.";
+            if (percentage >= 70) return "Good effort! Review the topics you missed and try again.";
+            return "Keep studying! Focus on understanding the concepts and try again.";
+        }
+    </script>
+</body>
+</html>
